@@ -1,4 +1,4 @@
 {
-  "version": "1.4.7",
-  "notes": "Fix starving villagers: gather food immediately, reachable berry routing, emergency eating."
+  "version": "1.5.0",
+  "notes": "Randomized new worlds, wildlife, hunting, farming, winter food storage and Ecosystem statistics."
 }
