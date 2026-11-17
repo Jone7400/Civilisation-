@@ -1,4 +1,4 @@
 {
-  "version": "1.4.3",
-  "notes": "Natural directional paths, narrow foot trails and gradual path regrowth."
+  "version": "1.4.6",
+  "notes": "Navigation recovery when a target is blocked by trees."
 }

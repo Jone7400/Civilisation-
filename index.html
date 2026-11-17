@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#17241d"><title>AI Village v1.4.5</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#17241d"><title>AI Village v1.4.6</title>
 <style>
 :root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#edf4e9;background:#111b16}*{box-sizing:border-box}body{margin:0}header{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 14px;background:#1c2b21;border-bottom:1px solid #39503d;flex-wrap:wrap}h1{font-size:18px;margin:0}small,.muted{color:#a8bea9}button,select{background:#314d37;color:white;border:1px solid #608467;border-radius:9px;padding:9px 12px;font:inherit;cursor:pointer}button:hover{background:#41694a}button.active{background:#7e6333;border-color:#c69b4e}main{display:grid;grid-template-columns:minmax(0,1fr) 330px;min-height:calc(100dvh - 65px)}#viewport{position:relative;min-height:440px;overflow:hidden;background:#243a29;touch-action:none}canvas{width:100%;height:100%;display:block;image-rendering:pixelated;touch-action:none}#hint{position:absolute;bottom:12px;left:12px;background:#15241cbb;padding:7px 10px;border-radius:8px;font-size:12px;pointer-events:none}aside{background:#1a2820;border-left:1px solid #38523d;max-height:calc(100dvh - 65px);overflow:auto;padding:14px}.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}.tabs button{padding:7px 10px;font-size:13px}h2{font-size:17px;margin:8px 0 12px}h3{font-size:14px;margin:16px 0 6px;color:#b5d8b6}.panel{background:#23362a;border:1px solid #3c5b44;border-radius:12px;padding:12px;margin-bottom:10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.stat{background:#263e2e;border-radius:8px;padding:10px}.stat strong{display:block;font-size:20px;margin-top:3px}.bar{height:7px;background:#102016;border-radius:5px;overflow:hidden;margin:5px 0 9px}.bar span{display:block;height:100%;background:#9dcf7e}.row{display:flex;justify-content:space-between;gap:8px;align-items:center}.event{padding:8px 0;border-bottom:1px solid #354a39;font-size:13px}.event:last-child{border:0}.pill{background:#395a41;border-radius:50px;padding:3px 7px;font-size:11px}.buttons{display:flex;gap:7px;flex-wrap:wrap}.notice{font-size:12px;line-height:1.5;color:#b9cdb9}.hidden{display:none!important}@media(max-width:850px){main{display:block}#viewport{height:55dvh;min-height:300px}aside{border-left:0;border-top:1px solid #38523d;max-height:none}header{padding:9px}h1{font-size:16px}#hint{font-size:10px}}#updateNotice{display:none;position:fixed;z-index:1000;right:14px;bottom:14px;width:min(360px,calc(100vw - 28px));padding:15px;background:#263d2e;border:2px solid #9bbd79;border-radius:14px;box-shadow:0 12px 30px #0008}#updateNotice strong{display:block;margin-bottom:7px}#updateNotice p{font-size:13px;line-height:1.4}#updateNotice .buttons{display:flex;gap:8px}#updateNotice button{flex:1}#updateStatus{font-size:12px;color:#a8bea9} .popbar{height:9px;background:#344b3b;border-radius:4px;overflow:hidden}.popbar span{display:block;height:100%;background:#91c978} .milestone{border-left:3px solid #c6a56e;padding:8px;margin:8px 0;background:#2a392e} </style></head>
-<body><header><div><h1>🌿 AI Village <small>v1.4.5 · Navigation Rescue</small></h1><small id="clock">Year 1 · Day 1</small></div><div class="buttons"><button id="pause">⏸ Pause</button><select id="speed" aria-label="Simulation speed"><option value="1">1× speed</option><option value="3">3× speed</option><option value="10">10× speed</option></select><button id="save">💾 Save</button><button id="checkUpdates">🔄 Check updates</button><button id="god">⚡ God Mode</button></div></header><div id="updateNotice" role="status" aria-live="polite"><strong>🌿 New AI Village version available</strong><p id="updateMessage">An update is ready. Save your village and reload.</p><div class="buttons"><button id="updateNow">Save & update</button><button id="updateLater">Later</button></div><div id="updateStatus"></div></div>
+<body><header><div><h1>🌿 AI Village <small>v1.4.6 · Navigation Recovery</small></h1><small id="clock">Year 1 · Day 1</small></div><div class="buttons"><button id="pause">⏸ Pause</button><select id="speed" aria-label="Simulation speed"><option value="1">1× speed</option><option value="3">3× speed</option><option value="10">10× speed</option></select><button id="save">💾 Save</button><button id="checkUpdates">🔄 Check updates</button><button id="god">⚡ God Mode</button></div></header><div id="updateNotice" role="status" aria-live="polite"><strong>🌿 New AI Village version available</strong><p id="updateMessage">An update is ready. Save your village and reload.</p><div class="buttons"><button id="updateNow">Save & update</button><button id="updateLater">Later</button></div><div id="updateStatus"></div></div>
 <main><div id="viewport"><canvas id="world"></canvas><div id="hint">Drag to pan · Pinch / scroll to zoom · Tap a villager to inspect</div></div><aside><div class="tabs"><button data-tab="people" class="active">Villagers</button><button data-tab="stats">Statistics</button><button data-tab="history">History</button><button data-tab="discoveries">Discoveries</button><button data-tab="production">Production</button><button data-tab="settlements">Settlements</button><button data-tab="routines">Village Life</button><button data-tab="society">Society</button><button data-tab="evolution">Evolution</button><button data-tab="environment">Environment</button><button data-tab="family">Family Tree</button><button data-tab="world">World</button></div><div id="content"></div></aside></main>
 <script>
 (()=>{'use strict';
@@ -46,28 +46,59 @@ function route(p,condition,radius=22){
  }return null}
 
 // When a forest encloses a villager, remove an adjacent blocking tree rather than starving in place.
-function clearBlockingTree(p){
- const adjacent=dirs.map(([dx,dy])=>({x:p.x+dx,y:p.y+dy})).filter(q=>inside(q.x,q.y)&&trees[idx(q.x,q.y)]&&cell(q.x,q.y)!==1);
- if(!adjacent.length)return false;
- // Prefer opening a route toward open ground, not chopping the entire forest.
- adjacent.sort((a,b)=>{const open=q=>dirs.reduce((n,[dx,dy])=>n+(inside(q.x+dx,q.y+dy)&&!trees[idx(q.x+dx,q.y+dy)]&&cell(q.x+dx,q.y+dy)!==1?1:0),0);return open(b)-open(a)});
- const q=adjacent[0],k=idx(q.x,q.y);trees[k]=0;berries[k]=0;
+// If a route cannot be found, clear a tree that leads toward the actual objective.
+// The earlier rescue only worked when ALL four adjacent tiles were blocked.
+function clearBlockingTree(p,condition,radius=90){
+ const sx=Math.round(p.x),sy=Math.round(p.y);
+ const candidates=dirs.map(([dx,dy])=>({x:sx+dx,y:sy+dy})).filter(q=>inside(q.x,q.y)&&trees[idx(q.x,q.y)]&&cell(q.x,q.y)!==1);
+ if(!candidates.length)return false;
+ // Prefer trees bordering open ground and lying near a reachable objective.
+ const targets=[];
+ const scan=Math.min(N-1,Math.max(24,radius));
+ for(let y=Math.max(0,sy-scan);y<=Math.min(N-1,sy+scan);y++)for(let x=Math.max(0,sx-scan);x<=Math.min(N-1,sx+scan);x++){
+  if(Math.abs(x-sx)+Math.abs(y-sy)>scan||cell(x,y)===1)continue;
+  if(condition(x,y))targets.push({x,y,d:Math.abs(x-sx)+Math.abs(y-sy)});
+ }
+ targets.sort((a,b)=>a.d-b.d);
+ const goal=targets[0];
+ const openAround=q=>dirs.reduce((n,[dx,dy])=>n+(inside(q.x+dx,q.y+dy)&&cell(q.x+dx,q.y+dy)!==1&&!trees[idx(q.x+dx,q.y+dy)]?1:0),0);
+ candidates.sort((a,b)=>{
+  const sa=openAround(a)*1.7-(goal?Math.abs(a.x-goal.x)+Math.abs(a.y-goal.y):0);
+  const sb=openAround(b)*1.7-(goal?Math.abs(b.x-goal.x)+Math.abs(b.y-goal.y):0);
+  return sb-sa;
+ });
+ const q=candidates[0],k=idx(q.x,q.y);trees[k]=0;berries[k]=0;
  const env=ensureEnvironment();env.felled++;env.stumps[k]=state.t;
- p.wood=(p.wood||0)+1;p.energy=Math.max(0,p.energy-.15);
- p.plan='Clearing a blocked route';p.blockedTreesCleared=(p.blockedTreesCleared||0)+1;
- if(!state.navigationRescues)state.navigationRescues=0;state.navigationRescues++;
- if(p.blockedTreesCleared===1||p.blockedTreesCleared%8===0)remember(p,'Cleared trees to escape a blocked route',3);
+ p.wood=(p.wood||0)+1;p.energy=Math.max(0,p.energy-.1);
+ p.plan='Clearing forest to reach destination';p.blockedTreesCleared=(p.blockedTreesCleared||0)+1;
+ state.navigationRescues=(state.navigationRescues||0)+1;
+ if(p.blockedTreesCleared===1||p.blockedTreesCleared%8===0)remember(p,'Cleared a tree blocking a route',3);
  dirty=true;return true;
 }
-function walkTo(p,condition,radius){let path=route(p,condition,radius);if(!path){p.navigationFailures=(p.navigationFailures||0)+1;const free=dirs.some(([dx,dy])=>inside(p.x+dx,p.y+dy)&&cell(p.x+dx,p.y+dy)!==1&&!trees[idx(p.x+dx,p.y+dy)]);if(!free)clearBlockingTree(p);return false}if(path.arrived)return true;const ox=p.x,oy=p.y;p.x=path.next.x;p.y=path.next.y;if(p.x!==ox||p.y!==oy){if(typeof markFootpath==='function')markFootpath(p.x,p.y,ox,oy);
- // Traversing a well-used path consumes less energy. The saving grows with experience.
- const from=idx(ox,oy),to=idx(p.x,p.y),cost=walkingCost(p,from,to);
- p.energy=Math.max(0,p.energy-(.035*cost));
- if(!state.pathStats)state.pathStats={steps:0,energySaved:0,trailSteps:0};
- state.pathStats.steps++;state.pathStats.energySaved+=.035*(1-cost);
- if(pathWear(from,to)>=10)state.pathStats.trailSteps++;
- dirty=true;p.distanceWalked=(p.distanceWalked||0)+1;state.distanceWalked=(state.distanceWalked||0)+1;p.lastMovedTick=state.t}return false}
-function walk(p,target){if(!target)return false;return walkTo(p,(x,y)=>x===target.x&&y===target.y,16)}
+function walkTo(p,condition,radius){
+ let path=route(p,condition,radius);
+ if(!path){
+  p.navigationFailures=(p.navigationFailures||0)+1;
+  // Only chop after repeated failures. This also works when some adjacent ground is free.
+  p.routeFailStreak=(p.routeFailStreak||0)+1;
+  if(p.routeFailStreak>=2){if(clearBlockingTree(p,condition,Math.max(radius,65)))p.routeFailStreak=0}
+  p.plan='Searching for a route ('+p.routeFailStreak+' failures)';return false;
+ }
+ p.routeFailStreak=0;
+ if(path.arrived)return true;
+ if(!path.next)return false;
+ const ox=p.x,oy=p.y;p.x=path.next.x;p.y=path.next.y;
+ if(p.x!==ox||p.y!==oy){if(typeof markFootpath==='function')markFootpath(p.x,p.y,ox,oy);
+  const from=idx(ox,oy),to=idx(p.x,p.y),cost=walkingCost(p,from,to);
+  p.energy=Math.max(0,p.energy-(.035*cost));
+  if(!state.pathStats)state.pathStats={steps:0,energySaved:0,trailSteps:0};
+  state.pathStats.steps++;state.pathStats.energySaved+=.035*(1-cost);
+  if(pathWear(from,to)>=10)state.pathStats.trailSteps++;
+  dirty=true;p.distanceWalked=(p.distanceWalked||0)+1;state.distanceWalked=(state.distanceWalked||0)+1;p.lastMovedTick=state.t;
+ }
+ return false;
+}
+function walk(p,target){if(!target)return false;return walkTo(p,(x,y)=>x===target.x&&y===target.y,Math.max(24,Math.min(120,Math.abs(target.x-p.x)+Math.abs(target.y-p.y)+8)))}
 
 function person(id){return state.people.find(p=>p.id===id)}
 function related(a,b){if(!a||!b)return true;if(a.id===b.id)return true;let parents=p=>[p.fatherId,p.motherId].filter(v=>v!==null&&v!==undefined);let aa=parents(a),bb=parents(b);return aa.includes(b.id)||bb.includes(a.id)||aa.some(id=>bb.includes(id))}
@@ -155,8 +186,8 @@ p.goal=choice.goal;p.plan=urgent?'Urgent need interrupts long-term plan':'Long-t
 if(choice.goal==='Drink'){let water=walkTo(p,(x,y)=>cell(x,y)===0&&dirs.some(([dx,dy])=>inside(x+dx,y+dy)&&cell(x+dx,y+dy)===1),90);if(water){p.thirst=Math.min(100,p.thirst+38);p.plan='Drinking at nearby water';if(r()<.0015*(1-techEffects(p).waterSafety)){p.health-=8;state.techStats.waterIllness++;remember(p,'Felt ill after drinking untreated water')}}else {p.plan='Searching for water';m.failures.Drink=(m.failures.Drink||0)+.02}}
 else if(choice.goal==='Eat'){if(p.food>0){p.food--;p.hunger=Math.min(100,p.hunger+44);p.plan='Eating stored food'}else{p.goal='Gather food'}}
 else if(choice.goal==='Rest'){p.energy=Math.min(100,p.energy+1.8*techEffects(p).restBonus);p.plan='Recovering energy'}
-else if(choice.goal==='Gather food'){let spot=route(p,(x,y)=>berries[idx(x,y)]>0||dirs.some(([dx,dy])=>inside(x+dx,y+dy)&&berries[idx(x+dx,y+dy)]),35);if(spot&&(spot.arrived||walk(p,spot.target))){const berrySpot=berries[idx(p.x,p.y)]?{x:p.x,y:p.y}:dirs.map(([dx,dy])=>({x:p.x+dx,y:p.y+dy})).find(q=>inside(q.x,q.y)&&berries[idx(q.x,q.y)]);if(berrySpot)berries[idx(berrySpot.x,berrySpot.y)]=0;let yieldFood=Math.min(techEffects(p).foodYield,Math.max(0,techEffects(p).storageCap-p.food));p.food+=yieldFood;state.totalFood+=yieldFood;ensureEnvironment().foodHarvested+=yieldFood;if(yieldFood>1)state.techStats.extraFood+=yieldFood-1;learn(p,'Foraging',.24,'Gathered berries');remember(p,'Found edible berries');p.plan='Collected berries';updatePlan(p,'Gather food',true)}else {if(!spot&&dirs.every(([dx,dy])=>!inside(p.x+dx,p.y+dy)||cell(p.x+dx,p.y+dy)===1||trees[idx(p.x+dx,p.y+dy)]))clearBlockingTree(p);p.plan='Looking for edible plants';if(state.t%45===0)planFailure(p,'No reachable berries nearby')}}
-else if(choice.goal==='Collect wood'){let spot=route(p,(x,y)=>dirs.some(([dx,dy])=>inside(x+dx,y+dy)&&trees[idx(x+dx,y+dy)]),30);if(spot&&(spot.arrived||walk(p,spot.target))){const adjacent=dirs.map(([dx,dy])=>({x:p.x+dx,y:p.y+dy})).find(q=>inside(q.x,q.y)&&trees[idx(q.x,q.y)]);if(adjacent){const k=idx(adjacent.x,adjacent.y);trees[k]=0;berries[k]=0;const e=ensureEnvironment();e.felled++;e.stumps[k]=state.t;}let yieldWood=adjacent?techEffects(p).woodYield:0;p.wood+=yieldWood;if(yieldWood>1)state.techStats.extraWood+=yieldWood-1;learn(p,'Woodcraft',.24,'Gathered timber');p.plan='Gathered timber';updatePlan(p,'Collect wood',true)}else {if(!spot&&dirs.every(([dx,dy])=>!inside(p.x+dx,p.y+dy)||cell(p.x+dx,p.y+dy)===1||trees[idx(p.x+dx,p.y+dy)]))clearBlockingTree(p);p.plan='Searching for timber';if(state.t%45===0)planFailure(p,'No reachable trees nearby')}}
+else if(choice.goal==='Gather food'){let spot=route(p,(x,y)=>berries[idx(x,y)]>0||dirs.some(([dx,dy])=>inside(x+dx,y+dy)&&berries[idx(x+dx,y+dy)]),35);if(spot&&(spot.arrived||walk(p,spot.target))){const berrySpot=berries[idx(p.x,p.y)]?{x:p.x,y:p.y}:dirs.map(([dx,dy])=>({x:p.x+dx,y:p.y+dy})).find(q=>inside(q.x,q.y)&&berries[idx(q.x,q.y)]);if(berrySpot)berries[idx(berrySpot.x,berrySpot.y)]=0;let yieldFood=Math.min(techEffects(p).foodYield,Math.max(0,techEffects(p).storageCap-p.food));p.food+=yieldFood;state.totalFood+=yieldFood;ensureEnvironment().foodHarvested+=yieldFood;if(yieldFood>1)state.techStats.extraFood+=yieldFood-1;learn(p,'Foraging',.24,'Gathered berries');remember(p,'Found edible berries');p.plan='Collected berries';updatePlan(p,'Gather food',true)}else {if(!spot&&state.t%3===0)clearBlockingTree(p,(x,y)=>berries[idx(x,y)]>0||dirs.some(([dx,dy])=>inside(x+dx,y+dy)&&berries[idx(x+dx,y+dy)]),45);p.plan='Looking for edible plants';if(state.t%45===0)planFailure(p,'No reachable berries nearby')}}
+else if(choice.goal==='Collect wood'){let spot=route(p,(x,y)=>dirs.some(([dx,dy])=>inside(x+dx,y+dy)&&trees[idx(x+dx,y+dy)]),30);if(spot&&(spot.arrived||walk(p,spot.target))){const adjacent=dirs.map(([dx,dy])=>({x:p.x+dx,y:p.y+dy})).find(q=>inside(q.x,q.y)&&trees[idx(q.x,q.y)]);if(adjacent){const k=idx(adjacent.x,adjacent.y);trees[k]=0;berries[k]=0;const e=ensureEnvironment();e.felled++;e.stumps[k]=state.t;}let yieldWood=adjacent?techEffects(p).woodYield:0;p.wood+=yieldWood;if(yieldWood>1)state.techStats.extraWood+=yieldWood-1;learn(p,'Woodcraft',.24,'Gathered timber');p.plan='Gathered timber';updatePlan(p,'Collect wood',true)}else {if(!spot&&state.t%3===0)clearBlockingTree(p,(x,y)=>dirs.some(([dx,dy])=>inside(x+dx,y+dy)&&trees[idx(x+dx,y+dy)]),45);p.plan='Searching for timber';if(state.t%45===0)planFailure(p,'No reachable trees nearby')}}
 else if(choice.goal==='Build shelter'){let x=Math.round(p.x),y=Math.round(p.y);if(cell(x,y)===0){p.wood-=techEffects(p).buildCost;p.home={x,y};buildings.push({x,y,owner:p.id});state.structures++;learn(p,'Building',1.8,'Built shelter');log(`${fullName(p)} built a wooden shelter.`);remember(p,'Built my first shelter',5);updatePlan(p,'Build shelter',true)}}
 else{ // Keep an exploration destination until reached or genuinely unreachable.
  if(!p.exploreTarget||p.exploreTries>30||Math.hypot(p.x-p.exploreTarget.x,p.y-p.exploreTarget.y)<1){
@@ -423,7 +454,7 @@ canvas.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);drag=nu
 canvas.addEventListener('wheel',e=>{e.preventDefault();cam.scale=Math.max(6,Math.min(48,cam.scale*(e.deltaY>0?.9:1.1)))},{passive:false});
 if(!load())init();if(!state.techStats)state.techStats={extraFood:0,extraWood:0,waterIllness:0};state.people.forEach(p=>{ensureLearning(p);ensureMind(p);ensureKnowledge(p);ensureInventory(p);ensureRoutine(p)});ensureProduction();ensureTransport();if(!state.workshops)state.workshops=[];repairPartnerships();if(!Number.isFinite(state.distanceWalked))state.distanceWalked=0;render();setInterval(()=>save(),30000);document.addEventListener('visibilitychange',()=>{if(document.hidden)save()});
 
-const APP_VERSION='1.4.5';
+const APP_VERSION='1.4.6';
 function versionParts(v){return String(v).replace(/^v/,'').split('.').map(x=>parseInt(x,10)||0)}
 function newerVersion(a,b){const aa=versionParts(a),bb=versionParts(b);for(let i=0;i<3;i++){if((aa[i]||0)!==(bb[i]||0))return (aa[i]||0)>(bb[i]||0)}return false}
 async function checkForUpdate(manual=false){if(!/^https?:$/.test(location.protocol)){if(manual)alert('Update checks require GitHub Pages.');return}const b=document.getElementById('checkUpdates');if(manual&&b){b.disabled=true;b.textContent='🔄 Checking…'}try{const res=await fetch('./version.json?check='+Date.now(),{cache:'no-store'});if(!res.ok)throw new Error('version.json unavailable');const info=await res.json();if(!info||typeof info.version!=='string')throw new Error('Invalid version.json');if(!newerVersion(info.version,APP_VERSION)){if(manual)alert('You are up to date: v'+APP_VERSION);return}const notice=document.getElementById('updateNotice');document.getElementById('updateMessage').textContent='AI Village v'+info.version+' is available. '+(info.notes||'Save and refresh to update.');notice.style.display='block';document.getElementById('updateNow').onclick=()=>{if(!save()){document.getElementById('updateStatus').textContent='Save failed; update cancelled.';return}location.reload()};document.getElementById('updateLater').onclick=()=>{notice.style.display='none'}}catch(e){if(manual)alert('Update check failed: '+e.message)}finally{if(b){b.disabled=false;b.textContent='🔄 Check updates'}}}
