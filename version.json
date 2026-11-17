@@ -1,4 +1,4 @@
 {
-  "version": "1.5.5",
-  "notes": "Distinct home sprites for levels 1\u20133; 60-tick field construction with 15 energy cost; irrigation and harvesting energy costs; construction progress inspector."
+  "version": "1.5.6",
+  "notes": "Heating fuel consumption by home level, rare spreading fires and firefighting, stricter home placement, gentler winter survival."
 }
