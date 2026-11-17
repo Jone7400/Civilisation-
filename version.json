@@ -1,4 +1,4 @@
 {
-  "version": "1.4.6",
-  "notes": "Navigation recovery when a target is blocked by trees."
+  "version": "1.4.7",
+  "notes": "Fix starving villagers: gather food immediately, reachable berry routing, emergency eating."
 }
