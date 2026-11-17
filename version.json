@@ -1,4 +1,4 @@
 {
-  "version": "1.5.4",
-  "notes": "Rural unlimited 2x2 fields, summer irrigation, three home levels, warmth and energy recovery."
+  "version": "1.5.5",
+  "notes": "Distinct home sprites for levels 1\u20133; 60-tick field construction with 15 energy cost; irrigation and harvesting energy costs; construction progress inspector."
 }
