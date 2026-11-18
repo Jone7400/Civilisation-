@@ -1,4 +1,4 @@
 {
-  "version": "3.2.0",
-  "notes": "Ore clusters, apple trees and seeds, boat fishing with physical fish."
+  "version": "3.2.1",
+  "notes": "Lossless compact save format, compatible with existing v3.2 saves."
 }
