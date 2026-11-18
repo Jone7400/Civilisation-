@@ -1,4 +1,4 @@
 {
-  "version": "3.6.1",
-  "notes": "Private citizen bridges, merchant payment safeguard, daily profit history fix"
+  "version": "3.6.2",
+  "notes": "Family balance: births easier for shared households; max two dependent children per couple; birth statistics."
 }
