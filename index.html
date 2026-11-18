@@ -127,7 +127,7 @@ function bakeryWholesale(){if(state.t%60!==0)return;for(const n of nations()){
 // Physical inter-village merchant: cargo travels with the villager, never teleports.
 function merchantTick(){if(state.t%12!==0)return;tradeEconomy();for(const p of state.people){if(!p.alive||p.age<3)continue;
  if(p.merchantTrip){const trip=p.merchantTrip,dest=nations()[trip.destination],distance=Math.hypot(p.x-dest.market.x,p.y-dest.market.y);
- if(distance<3){const qty=p[trip.good]||0;const price=marketPrice(dest,trip.good);if(qty>0&&dest.treasury>=price){p[trip.good]--;p.gold=(p.gold||0)+price;dest.market.stock[trip.good]=(dest.market.stock[trip.good]||0)+1;dest.treasury-=price;dest.market.trades++;dest.market.volume+=price;state.tradeEconomy.deliveries++;state.tradeEconomy.volume+=price;p.happiness=Math.min(100,(p.happiness||50)+3);p.plan='Delivered '+trip.good+' to '+dest.name;}p.merchantTrip=null;continue}
+ if(distance<3){const qty=p[trip.good]||0;const price=marketPrice(dest,trip.good);if(qty>0&&dest.treasury>=price){p[trip.good]--;p.gold=(p.gold||0)+price;dest.market.stock[trip.good]=(dest.market.stock[trip.good]||0)+1;dest.treasury-=price;dest.market.trades++;dest.market.volume+=price;state.tradeEconomy.deliveries++;state.tradeEconomy.volume+=price;p.happiness=Math.min(100,(p.happiness||50)+3);p.plan='Delivered '+trip.good+' to '+dest.name;p.merchantTrip=null;}else{p.plan='Waiting for payment at '+dest.name;if(state.t-trip.started>2400)p.merchantTrip=null;}continue}
  if(state.t-trip.started>2400||p.hunger<24||p.thirst<24){p.merchantTrip=null;continue}
  const dx=dest.market.x-p.x,dy=dest.market.y-p.y,dist=Math.hypot(dx,dy);const tx=dist>75?p.x+dx*70/dist:dest.market.x,ty=dist>75?p.y+dy*70/dist:dest.market.y;walkTo(p,(x,y)=>Math.hypot(x-tx,y-ty)<2.5,85);p.plan='Transporting '+trip.good+' to '+dest.name;continue}
  if(state.t%240!==p.id%240||p.energy<75||p.hunger<75||p.thirst<75)continue;
@@ -144,7 +144,7 @@ function citizenRequests(){if(state.t%60!==0)return;for(const n of nations()){co
  n.requests={bridges:bridges+citizens.filter(p=>(p.navigationFailures||0)>2).length,roads,water,housing};
  n.priority=Object.entries(n.requests).sort((a,b)=>b[1]-a[1])[0]?.[0]||'roads';
  }}
-function economicHistory(){if(state.t%60!==0)return;for(const n of nations()){n.economicHistory??=[];const citizens=state.people.filter(p=>p.alive&&p.nation===n.id);const shops=enterpriseState().sites.filter(b=>b.nation===n.id);n.economicHistory.push({year:state.year,day:state.day,treasury:Math.round(n.treasury),wealth:Math.round(citizens.reduce((s,p)=>s+(p.gold||0),0)),avgWealth:citizens.length?Math.round(citizens.reduce((s,p)=>s+(p.gold||0),0)/citizens.length):0,marketVolume:n.market.volume,enterpriseProfit:Math.round(shops.reduce((s,b)=>s+(b.revenue||0)-(b.expenses||0),0)),woodPrice:marketPrice(n,'wood'),wheatPrice:marketPrice(n,'wheat')});if(n.economicHistory.length>240)n.economicHistory.shift();}}
+function economicHistory(){if(state.t%60!==0)return;for(const n of nations()){n.economicHistory??=[];const citizens=state.people.filter(p=>p.alive&&p.nation===n.id);const shops=enterpriseState().sites.filter(b=>b.nation===n.id);n.economicHistory.push({year:state.year,day:state.day,treasury:Math.round(n.treasury),wealth:Math.round(citizens.reduce((s,p)=>s+(p.gold||0),0)),avgWealth:citizens.length?Math.round(citizens.reduce((s,p)=>s+(p.gold||0),0)/citizens.length):0,marketVolume:n.market.volume,enterpriseProfit:Math.round(shops.reduce((s,b)=>s+(b.revenue||0)-(b.expenses||0),0)-(n._lastEnterpriseProfit||0)),woodPrice:marketPrice(n,'wood'),wheatPrice:marketPrice(n,'wheat')});n._lastEnterpriseProfit=shops.reduce((s,b)=>s+(b.revenue||0)-(b.expenses||0),0);if(n.economicHistory.length>240)n.economicHistory.shift();}}
 function marketView(esc){return `<h2>💰 National Markets</h2><p class="notice">Autonomous wells and bakeries · Builders are paid per 10% completed · Mayors control public budgets.</p><p class="notice">Two independent markets. All prices are in gold. Selling price to citizens is 25% above the current market buying price (rounded up).</p>`+nations().map(n=>{const m=n.market;const citizens=state.people.filter(p=>p.alive&&p.nation===n.id);return `<div class="panel"><h3 style="color:${n.color}">${esc(n.name)}</h3><div class="grid"><div class="stat">Treasury<strong>${Math.round(n.treasury).toLocaleString('en-US')} G</strong></div><div class="stat">Population<strong>${citizens.length}</strong></div><div class="stat">Citizens' gold<strong>${citizens.reduce((v,p)=>v+(p.gold||0),0).toLocaleString('en-US')} G</strong></div><div class="stat">Completed trades<strong>${m.trades}</strong></div></div><table style="width:100%;margin-top:12px;text-align:left"><tr><th>Good</th><th>Stock</th><th>Buys</th><th>Sells</th></tr>${Object.keys(marketGoods).map(k=>`<tr><td>${marketGoods[k].label}</td><td>${m.stock[k]||0}</td><td>${marketPrice(n,k)} G</td><td>${Math.ceil(marketPrice(n,k)*1.25)} G</td></tr>`).join('')}</table><div class="panel" style="margin-top:10px"><strong>🏪 Enterprises</strong><div class="event">Mayor: ${esc(fullName(person(n.mayorId)||{name:'Not elected',surname:''}))} · Citizen priority: ${esc(n.priority||'undecided')} · Tax policy: ${esc(n.taxPolicy||'normal')} · Tax revenue: ${n.taxCollected||0} G</div><div class="event">Requests: ${Object.entries(n.requests||{}).map(([k,v])=>esc(k)+': '+v).join(' · ')||'No requests yet'}</div><div class="event">Wells: ${enterpriseState().sites.filter(b=>b.nation===n.id&&b.kind==='well').length} · Bakeries: ${enterpriseState().sites.filter(b=>b.nation===n.id&&b.kind==='bakery').length} · Construction sites: ${enterpriseState().sites.filter(b=>b.nation===n.id&&b.progress<100).length}</div>${enterpriseState().sites.filter(b=>b.nation===n.id).map(b=>`<div class="event">${b.kind} · ${b.progress<100?Math.floor(b.progress)+'% built':'Open'} · Owner: ${b.publicOwned?'Village':esc(fullName(person(b.owner)||{name:'Unknown',surname:''}))} · Profit: ${Math.round(b.earnings)} G · Customers: ${b.customers}</div>`).join('')}</div><div class="panel" style="margin-top:10px"><strong>🧠 Economic AI</strong><div class="event">Physical merchant trips: ${tradeEconomy().trips} · Deliveries: ${tradeEconomy().deliveries} · Trade value: ${tradeEconomy().volume} G</div><div class="event">Economic history: ${(n.economicHistory||[]).length} days · Last wood price: ${n.economicHistory?.at(-1)?.woodPrice??'—'} G · Wheat: ${n.economicHistory?.at(-1)?.wheatPrice??'—'} G</div><div class="event">Individual buying decisions: ${citizens.reduce((s,p)=>s+(p.economics?.decisions||0),0)}</div><div class="event">Gold spent on planned purchases: ${Math.round(citizens.reduce((s,p)=>s+(p.economics?.spent||0),0))} G</div><div class="event">Estimated work ticks saved: ${Math.round(citizens.reduce((s,p)=>s+(p.economics?.savedTime||0),0))}</div><small>Citizens compare market prices, travel time and gathering time. They learn from completed decisions.</small></div><p><button data-focusnation="${n.id}">📍 Go to ${esc(n.name)}</button> <button data-explorejob="${n.id}">Post Explore job (40 G)</button></p><div class="event">Open Explore jobs: ${n.exploreJobs} · Paid: ${n.explorePaid} G · Known deposits: ${n.knownDeposits.length}</div>${n.knownDeposits.slice(-12).map(d=>`<div class="event">${d.kind} at (${d.x}, ${d.y}) · ${d.remaining} remaining</div>`).join('')}</div>`}).join('')}
 
 // Persistent mineral deposits and harvestable medicinal plants.
@@ -705,7 +705,7 @@ function bridgeAt(x,y){return !!state?.infrastructure?.bridges?.some(b=>b.x===x&
 // Citizens identify straight water crossings from shore. Repeated failures create
 // demand; the mayor funds only crossings connecting two accessible banks.
 function bridgeProjects(){const inf=ensureInfrastructure();inf.demands??={};inf.projects??=[];return inf}
-function bridgeFootprintFree(x,y){return inside(x,y)&&cell(x,y)===1&&!bridgeAt(x,y)&&!bridgeProjects().projects.some(j=>j.tiles.some(t=>t.x===x&&t.y===y))}
+function bridgeFootprintFree(x,y){return inside(x,y)&&cell(x,y)===1&&!bridgeAt(x,y)&&!bridgeProjects().projects.some(j=>!j.done&&j.tiles.some(t=>t.x===x&&t.y===y))&&!((bridgeProjects().privateJobs||[]).some(j=>!j.done&&j.tiles.some(t=>t.x===x&&t.y===y)))}
 function registerBridgeDemand(p,condition){
  const inf=bridgeProjects(),sx=Math.round(p.x),sy=Math.round(p.y);
  for(let radius=1;radius<=5;radius++)for(const [dx,dy] of dirs){
@@ -745,18 +745,62 @@ function municipalBridgeDaily(n){
  if(state.day%30===0)for(const [k,d] of Object.entries(inf.demands))if(state.t-d.last>YEAR*60)delete inf.demands[k];
 }
 
-function tryBridge(p){if(p.wood<4||(p.skills?.Building||0)<3)return false;const inf=ensureInfrastructure();if(inf.bridges.length>=120)return false;
- const choices=dirs.map(([dx,dy])=>({x:Math.round(p.x)+dx,y:Math.round(p.y)+dy})).filter(q=>inside(q.x,q.y)&&cell(q.x,q.y)===1&&
- ((inside(q.x-1,q.y)&&inside(q.x+1,q.y)&&cell(q.x-1,q.y)===0&&cell(q.x+1,q.y)===0)||
- (inside(q.x,q.y-1)&&inside(q.x,q.y+1)&&cell(q.x,q.y-1)===0&&cell(q.x,q.y+1)===0)));
- const straight=choices.filter(q=>{const neighbors=dirs.filter(([dx,dy])=>bridgeAt(q.x+dx,q.y+dy));if(neighbors.length===0)return true;if(neighbors.length>1)return false;const [dx,dy]=neighbors[0];const bx=q.x+dx,by=q.y+dy;const previous=ensureInfrastructure().bridges.find(b=>b.x===bx&&b.y===by);return !previous?.direction||(previous.direction[0]===-dx&&previous.direction[1]===-dy);});
- if(!straight.length)return false;const q=straight[Math.floor(r()*straight.length)];const neighbor=dirs.find(([dx,dy])=>bridgeAt(q.x+dx,q.y+dy));p.wood-=4;inf.bridges.push({x:q.x,y:q.y,owner:p.id,direction:neighbor?[-neighbor[0],-neighbor[1]]:null});inf.bridgesBuilt++;learn(p,'Building',.7,'Built a bridge');log(fullName(p)+' built a bridge across water.');return true}
+// Private bridge building: a citizen spends their own wood and constructs a
+// complete straight crossing, one tile at a time, from a reachable shore.
+function privateBridgeTick(){
+ if(state.t%24!==0)return;
+ const inf=bridgeProjects();inf.privateJobs??=[];
+ for(const job of inf.privateJobs){
+  if(job.done)continue;
+  const owner=person(job.owner);
+  if(!owner?.alive){job.done=true;continue}
+  const next=job.tiles[job.progress];
+  if(!next){job.done=true;continue}
+  if(bridgeAt(next.x,next.y)){job.progress++;continue}
+  if(!inside(next.x,next.y)||cell(next.x,next.y)!==1||inf.projects.some(j=>!j.done&&j.tiles.some(t=>t.x===next.x&&t.y===next.y))){job.done=true;continue}
+  if((owner.wood||0)<4){owner.plan='Gathering wood for my bridge';continue}
+  const near=dirs.some(([dx,dy])=>Math.hypot(owner.x-(next.x+dx),owner.y-(next.y+dy))<.6&&
+   (cell(next.x+dx,next.y+dy)===0||bridgeAt(next.x+dx,next.y+dy)));
+  if(!near){walkTo(owner,(x,y)=>dirs.some(([dx,dy])=>x===next.x+dx&&y===next.y+dy&&
+    (cell(x,y)===0||bridgeAt(x,y))),75);continue}
+  owner.wood-=4;inf.bridges.push({x:next.x,y:next.y,owner:owner.id,publicOwned:false,direction:job.direction});
+  inf.bridgesBuilt++;job.progress++;owner.energy=Math.max(0,owner.energy-2);
+  learn(owner,'Building',.7,'Built a private bridge tile');owner.plan='Building my own bridge';
+  if(job.progress>=job.tiles.length){job.done=true;log(fullName(owner)+' completed a '+job.tiles.length+'-tile private bridge.');}
+ }
+ inf.privateJobs=inf.privateJobs.filter(j=>!j.done);
+}
+function tryBridge(p){
+ if((p.skills?.Building||0)<3||(p.wood||0)<4||p.age<3)return false;
+ const inf=bridgeProjects();inf.privateJobs??=[];
+ if(inf.bridges.length>=120||inf.privateJobs.some(j=>j.owner===p.id))return false;
+ const sx=Math.round(p.x),sy=Math.round(p.y);
+ if(cell(sx,sy)!==0)return false;
+ const candidates=[];
+ for(const [dx,dy] of dirs){
+  const tiles=[];let x=sx+dx,y=sy+dy;
+  while(inside(x,y)&&cell(x,y)===1&&tiles.length<9){tiles.push({x,y});x+=dx;y+=dy}
+  if(!tiles.length||!inside(x,y)||cell(x,y)!==0)continue;
+  if(!tiles.every(t=>bridgeFootprintFree(t.x,t.y)))continue;
+  const demand=Object.values(inf.demands||{}).find(d=>d.nation===p.nation&&d.tiles.length===tiles.length&&
+    d.tiles.every((t,i)=>t.x===tiles[i].x&&t.y===tiles[i].y));
+  candidates.push({tiles,direction:[dx,dy],votes:demand?.votes||0});
+ }
+ if(!candidates.length)return false;
+ candidates.sort((a,b)=>b.votes-a.votes||a.tiles.length-b.tiles.length);
+ const selected=candidates[0];
+ // Start only when demand exists or the citizen has enough wood to finish.
+ if(!selected.votes&&(p.wood||0)<selected.tiles.length*4)return false;
+ inf.privateJobs.push({owner:p.id,nation:p.nation,tiles:selected.tiles,direction:selected.direction,progress:0,started:state.t});
+ p.plan='Planned a '+selected.tiles.length+'-tile private bridge';
+ return true;
+}
 function tryFishing(p){if((p.skills?.Foraging||0)<2||!canAddItem(p,'fish'))return false;
  const shore=dirs.some(([dx,dy])=>inside(Math.round(p.x)+dx,Math.round(p.y)+dy)&&cell(Math.round(p.x)+dx,Math.round(p.y)+dy)===1);
  if(!shore)return false;const chance=Math.min(.85,.22+(p.skills.Foraging||0)*.035+(p.strategy?.id==='food_fish'?.12:0)+(typeof innovationEffect==='function'&&innovationEffect(p,'fish')?.1:0));if(r()<chance){p.fish=(p.fish||0)+1;state.totalFood++;ensureInfrastructure().fishCaught++;learn(p,'Foraging',.19,'Caught a fish');p.plan='Caught a fish';if(p.hunger<35){p.fish--;p.hunger=Math.min(100,p.hunger+44)}return true}p.plan='Fishing at the shoreline';return true}
 function findFishingSpot(p){return route(p,(x,y)=>cell(x,y)===0&&!trees[idx(x,y)]&&dirs.some(([dx,dy])=>inside(x+dx,y+dy)&&cell(x+dx,y+dy)===1),55)}
 
-function productionTick(){if(state.t%12!==0)return;ensureProduction();ensureTransport();ensureEnvironment();ensureCivilization();
+function productionTick(){privateBridgeTick();if(state.t%12!==0)return;ensureProduction();ensureTransport();ensureEnvironment();ensureCivilization();
  for(const p of state.people){if(!p.alive||p.age<3)continue;ensureInventory(p);
   if(p.hunger<30||p.thirst<30)continue;
   if(workOccupation(p))continue;
@@ -766,6 +810,7 @@ function productionTick(){if(state.t%12!==0)return;ensureProduction();ensureTran
   // Stone gathering is available from the first day, without technology. Tools improve yield.
   if(p.stone<(hasItem(p,'stone_tool')?6:3)&&freeCarry(p)>=3&&p.energy>=22&&r()<.35){if(physicalStone(p))continue}
   if(tech(p,'storehouse')&&p.home&&p.wood>=6&&r()<.08)makeStore(p);
+  if((p.wood||0)>=4&&r()<.08&&tryBridge(p))continue;
   // Public bridge projects are now triggered by repeated failed crossings.
   if(p.food<3&&r()<.35&&tryFishing(p))continue;
   const store=nearStore(p);if(!store)continue;
@@ -1394,7 +1439,7 @@ let existingWorld=false,gameReady=false;
 async function bootGame(){let saved=null;try{saved=await idbRead()}catch(e){console.warn('IndexedDB unavailable',e)}existingWorld=load(saved);if(!existingWorld)init();nations();if(!state.techStats)state.techStats={extraFood:0,extraWood:0,waterIllness:0};state.people.forEach(p=>{ensureLearning(p);ensureMind(p);ensureKnowledge(p);ensureInventory(p);ensureRoutine(p)});ensureProduction();ensureTransport();ensureEcosystem();if(!state.workshops)state.workshops=[];ensureCommunication();ensureBoats();repairPartnerships();if(!Number.isFinite(state.distanceWalked))state.distanceWalked=0;render();gameReady=true;setInterval(()=>save(),30000);document.addEventListener('visibilitychange',()=>{if(document.hidden&&!offlineRunning)save()});setTimeout(offlineCatchup,100);}
 bootGame().catch(e=>showSimulationError(e));
 
-const APP_VERSION='3.6.0';
+const APP_VERSION='3.6.1';
 function versionParts(v){return String(v).replace(/^v/,'').split('.').map(x=>parseInt(x,10)||0)}
 function newerVersion(a,b){const aa=versionParts(a),bb=versionParts(b);for(let i=0;i<3;i++){if((aa[i]||0)!==(bb[i]||0))return (aa[i]||0)>(bb[i]||0)}return false}
 async function checkForUpdate(manual=false){if(!/^https?:$/.test(location.protocol)){if(manual)alert('Update checks require GitHub Pages.');return}const b=document.getElementById('checkUpdates');if(manual&&b){b.disabled=true;b.textContent='🔄 Checking…'}try{const res=await fetch('./version.json?check='+Date.now(),{cache:'no-store'});if(!res.ok)throw new Error('version.json unavailable');const info=await res.json();if(!info||typeof info.version!=='string')throw new Error('Invalid version.json');if(!newerVersion(info.version,APP_VERSION)){if(manual)alert('You are up to date: v'+APP_VERSION);return}const notice=document.getElementById('updateNotice');document.getElementById('updateMessage').textContent='AI Village v'+info.version+' is available. '+(info.notes||'Save and refresh to update.');notice.style.display='block';document.getElementById('updateNow').onclick=async()=>{if(!await save()){document.getElementById('updateStatus').textContent='Save failed; update cancelled.';return}location.reload()};document.getElementById('updateLater').onclick=()=>{notice.style.display='none'}}catch(e){if(manual)alert('Update check failed: '+e.message)}finally{if(b){b.disabled=false;b.textContent='🔄 Check updates'}}}
