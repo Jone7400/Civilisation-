@@ -1,4 +1,1 @@
-{
-  "version": "3.2.1",
-  "notes": "Lossless compact save format, compatible with existing v3.2 saves."
-}
+{"version":"3.2.2","notes":"Family inventories, annual summer apple harvest, villager gold display, IndexedDB saves and update fix."}
