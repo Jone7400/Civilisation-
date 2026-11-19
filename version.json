@@ -1,3 +1,4 @@
 {
-  "version": "3.7.1"
+  "version": "3.7.2",
+  "notes": "Market data normalization and offline simulation stability fixes."
 }
